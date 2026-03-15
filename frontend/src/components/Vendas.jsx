@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 
 const Vendas = ({ setToast }) => {
+  const [clientes, setClientes] = useState([]);
+  const [venda, setVenda] = useState({ id: '', cliente_id: '', itens: [{ produto_id: 'PROD-001', quantidade: 1, valor_unitario: 100 }] });
+  const [loading, setLoading] = useState(false);
   const [novoCliente, setNovoCliente] = useState({ id: '', razao_social: '', cnpj_cpf: '' });
 
+  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
   const fetchClientes = () => {
-    fetch(`${api.baseURL || 'http://localhost:8000'}/api/v1/vendas/clientes/`)
+    fetch(`${BASE_URL}/api/v1/vendas/clientes/`)
       .then(res => res.json())
-      .then(data => setClientes(data))
+      .then(data => setClientes(Array.isArray(data) ? data : []))
       .catch(err => console.error("Erro ao carregar clientes", err));
   };
 
@@ -21,7 +26,7 @@ const Vendas = ({ setToast }) => {
       // Usamos o repository diretamente ou criamos um endpoint POST no router? 
       // Vou adicionar um endpoint POST /vendas/clientes no robust_routers.py depois.
       // Por enquanto, vamos assumir que existe.
-      const res = await fetch(`${api.baseURL || 'http://localhost:8000'}/api/v1/vendas/clientes/`, {
+      const res = await fetch(`${BASE_URL}/api/v1/vendas/clientes/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novoCliente)

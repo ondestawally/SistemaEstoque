@@ -18,6 +18,21 @@ class ProdutoRepositorySQLAlchemy:
             codigo_barras=orm.codigo_barras, ativo=orm.ativo
         )
 
+    def salvar(self, produto: Produto) -> None:
+        orm = self.db.query(ProdutoORM).filter(ProdutoORM.id == produto.id).first()
+        if not orm:
+            orm = ProdutoORM(id=produto.id)
+            self.db.add(orm)
+        orm.nome = produto.nome
+        orm.descricao = produto.descricao
+        orm.codigo_barras = produto.codigo_barras
+        orm.ativo = produto.ativo
+        self.db.commit()
+
+    def listar_todos(self) -> List[Produto]:
+        orms = self.db.query(ProdutoORM).all()
+        return [Produto(id=o.id, nome=o.nome, descricao=o.descricao, codigo_barras=o.codigo_barras, ativo=o.ativo) for o in orms]
+
 class FornecedorRepositorySQLAlchemy:
     def __init__(self, db: Session):
         self.db = db
@@ -29,6 +44,20 @@ class FornecedorRepositorySQLAlchemy:
             id=orm.id, razao_social=orm.razao_social, 
             cnpj=CNPJ(orm.cnpj), ativo=orm.ativo
         )
+
+    def salvar(self, fornecedor: Fornecedor) -> None:
+        orm = self.db.query(FornecedorORM).filter(FornecedorORM.id == fornecedor.id).first()
+        if not orm:
+            orm = FornecedorORM(id=fornecedor.id)
+            self.db.add(orm)
+        orm.razao_social = fornecedor.razao_social
+        orm.cnpj = str(fornecedor.cnpj)
+        orm.ativo = fornecedor.ativo
+        self.db.commit()
+
+    def listar_todos(self) -> List[Fornecedor]:
+        orms = self.db.query(FornecedorORM).all()
+        return [Fornecedor(id=o.id, razao_social=o.razao_social, cnpj=CNPJ(o.cnpj), ativo=o.ativo) for o in orms]
 
 class PedidoRepositorySQLAlchemy:
     def __init__(self, db: Session, fornecedor_repo: FornecedorRepositorySQLAlchemy, produto_repo: ProdutoRepositorySQLAlchemy):

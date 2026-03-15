@@ -15,6 +15,49 @@ def get_criar_pedido_use_case(db: Session = Depends(get_db)):
     return CriarPedidoCompraUseCase(forn_repo, prod_repo, pedido_repo)
 
 
+from pydantic import BaseModel
+from typing import List, Optional
+
+class ProdutoDTO(BaseModel):
+    id: str
+    nome: str
+    descricao: Optional[str] = None
+    codigo_barras: Optional[str] = None
+    ativo: bool = True
+
+class FornecedorDTO(BaseModel):
+    id: str
+    razao_social: str
+    cnpj: str
+    ativo: bool = True
+
+@router.post("/produtos/", status_code=201)
+def criar_produto(dto: ProdutoDTO, db: Session = Depends(get_db)):
+    from domain.erp.produto import Produto
+    repo = ProdutoRepositorySQLAlchemy(db)
+    produto = Produto(id=dto.id, nome=dto.nome, descricao=dto.descricao, codigo_barras=dto.codigo_barras, ativo=dto.ativo)
+    repo.salvar(produto)
+    return {"message": "Produto cadastrado"}
+
+@router.get("/produtos/", response_model=List[ProdutoDTO])
+def listar_produtos(db: Session = Depends(get_db)):
+    repo = ProdutoRepositorySQLAlchemy(db)
+    return repo.listar_todos()
+
+@router.post("/fornecedores/", status_code=201)
+def criar_fornecedor(dto: FornecedorDTO, db: Session = Depends(get_db)):
+    from domain.erp.fornecedor import Fornecedor
+    from domain.value_objects import CNPJ
+    repo = FornecedorRepositorySQLAlchemy(db)
+    fornecedor = Fornecedor(id=dto.id, razao_social=dto.razao_social, cnpj=CNPJ(dto.cnpj), ativo=dto.ativo)
+    repo.salvar(fornecedor)
+    return {"message": "Fornecedor cadastrado"}
+
+@router.get("/fornecedores/", response_model=List[FornecedorDTO])
+def listar_fornecedores(db: Session = Depends(get_db)):
+    repo = FornecedorRepositorySQLAlchemy(db)
+    return repo.listar_todos()
+
 @router.post("/pedidos/", status_code=201)
 def criar_pedido_compra(dto: CriarPedidoCompraDto, use_case: CriarPedidoCompraUseCase = Depends(get_criar_pedido_use_case)):
     """

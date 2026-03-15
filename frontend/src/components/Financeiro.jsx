@@ -3,9 +3,10 @@ import { api } from '../services/api';
 
 const Financeiro = () => {
   const [data, setData] = useState({ resumo: { total_receber: 0, total_pagar: 0, saldo: 0 }, detalhes: [] });
+  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   useEffect(() => {
-    fetch(`${api.baseURL || 'http://localhost:8000'}/api/v1/financeiro/fluxo-caixa/`)
+    fetch(`${BASE_URL}/api/v1/financeiro/fluxo-caixa/`)
       .then(res => res.json())
       .then(d => setData(d))
       .catch(err => console.error("Erro ao carregar financeiro", err));

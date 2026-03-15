@@ -25,7 +25,7 @@ export const api = {
             ]
         };
         
-        const res = await fetch(`${API_URL}/erp/pedidos/`, {
+        const res = await fetch(`${API_URL}/api/v1/erp/pedidos/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -44,7 +44,7 @@ export const api = {
             data_recebimento: dataRecebimento
         };
 
-        const res = await fetch(`${API_URL}/wms/receber/`, {
+        const res = await fetch(`${API_URL}/api/v1/wms/receber/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
