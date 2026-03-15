@@ -65,50 +65,35 @@ const Vendas = ({ setToast }) => {
 
   return (
     <div className="space-y-8 fade-in">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Cadastro de Cliente */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h3 className="text-xl font-bold mb-4">Novo Cliente</h3>
-          <form onSubmit={handleCreateCliente} className="grid grid-cols-2 gap-4">
-            <input className="border p-2 rounded-lg" placeholder="ID (ex: CLI-001)" value={novoCliente.id} onChange={e => setNovoCliente({...novoCliente, id: e.target.value})} required />
-            <input className="border p-2 rounded-lg" placeholder="CNPJ / CPF" value={novoCliente.cnpj_cpf} onChange={e => setNovoCliente({...novoCliente, cnpj_cpf: e.target.value})} required />
-            <input className="border p-2 rounded-lg col-span-2" placeholder="Razão Social" value={novoCliente.razao_social} onChange={e => setNovoCliente({...novoCliente, razao_social: e.target.value})} required />
-            <button className="col-span-2 bg-slate-800 text-white py-2 rounded-lg hover:bg-slate-900 transition-colors">Cadastrar Parceiro</button>
-          </form>
-        </div>
-
+      <div className="max-w-xl mx-auto">
         {/* Novo Pedido */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h3 className="text-xl font-bold mb-4">Gerar Venda</h3>
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <span className="bg-brand-100 text-brand-600 w-8 h-8 rounded-lg flex items-center justify-center">💰</span>
+            Gerar Venda
+          </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <input type="text" className="border p-2 rounded-lg" value={venda.id} onChange={e => setVenda({...venda, id: e.target.value})} placeholder="ID da Venda" required />
-              <select className="border p-2 rounded-lg" value={venda.cliente_id} onChange={e => setVenda({...venda, cliente_id: e.target.value})} required>
-                <option value="">Selecione um cliente</option>
-                {clientes.map(c => <option key={c.id} value={c.id}>{c.razao_social}</option>)}
-              </select>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">ID da Venda</label>
+                <input type="text" className="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-brand-500 transition-all" value={venda.id} onChange={e => setVenda({...venda, id: e.target.value})} placeholder="VENDA-001" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Selecione o Cliente</label>
+                <select className="w-full px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-brand-500 transition-all" value={venda.cliente_id} onChange={e => setVenda({...venda, cliente_id: e.target.value})} required>
+                  <option value="">Selecione um cliente</option>
+                  {clientes.map(c => <option key={c.id} value={c.id}>{c.razao_social}</option>)}
+                </select>
+              </div>
+              <div className="text-xs text-slate-400">
+                Pode cadastrar novos clientes na aba 🤝 Parceiros.
+              </div>
             </div>
-            <button type="submit" disabled={loading} className="w-full bg-brand-600 text-white py-3 rounded-xl font-bold hover:bg-brand-700 transition-colors">
+            <button type="submit" disabled={loading} className="w-full mt-6 bg-brand-600 text-white py-3 rounded-xl font-bold hover:bg-brand-700 shadow-lg shadow-brand-500/20 active:scale-[0.98] transition-all">
               {loading ? 'Processando...' : 'Confirmar & Lançar Financeiro'}
             </button>
           </form>
         </div>
-      </div>
-
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h3 className="text-xl font-bold mb-4">Painel de Clientes</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {clientes.map(c => (
-            <div key={c.id} className="p-4 border rounded-xl flex justify-between items-center group hover:border-brand-200 transition-all">
-              <div>
-                <p className="font-bold text-slate-800">{c.razao_social}</p>
-                <p className="text-xs text-slate-500">{c.cnpj_cpf}</p>
-              </div>
-              <span className="bg-emerald-100 text-emerald-800 text-[9px] px-2 py-1 rounded-full uppercase font-black">Cliente</span>
-            </div>
-          ))}
-        </div>
-        {clientes.length === 0 && <p className="text-slate-400 italic text-center py-10">Cadastre seu primeiro cliente para iniciar as vendas.</p>}
       </div>
     </div>
   );

@@ -73,3 +73,38 @@ def criar_pedido_compra(dto: CriarPedidoCompraDto, use_case: CriarPedidoCompraUs
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/pedidos/")
+def listar_pedidos_compra(db: Session = Depends(get_db)):
+    from infrastructure.orm_models.erp_models import PedidoORM
+    pedidos = db.query(PedidoORM).order_by(PedidoORM.data_emissao.desc()).all()
+    return [
+        {
+            "id": p.id,
+            "fornecedor_id": p.fornecedor_id,
+            "status": p.status,
+            "data_emissao": str(p.data_emissao),
+        }
+        for p in pedidos
+    ]
+
+TRANSICOES_OC = {
+    "RASCUNHO": "APROVADO",
+    "APROVADO": "RECEBIDO",
+}
+
+@router.patch("/pedidos/{pedido_id}/status", status_code=200)
+def atualizar_status_pedido(pedido_id: str, db: Session = Depends(get_db)):
+    """
+    Avança o status de uma OC: RASCUNHO → APROVADO → RECEBIDO
+    """
+    from infrastructure.orm_models.erp_models import PedidoORM
+    pedido = db.query(PedidoORM).filter(PedidoORM.id == pedido_id).first()
+    if not pedido:
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
+    proximo = TRANSICOES_OC.get(pedido.status)
+    if not proximo:
+        raise HTTPException(status_code=400, detail=f"Status '{pedido.status}' não pode ser avançado")
+    pedido.status = proximo
+    db.commit()
+    return {"message": f"Status atualizado para {proximo}", "pedido_id": pedido_id, "novo_status": proximo}

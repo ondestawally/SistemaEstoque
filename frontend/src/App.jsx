@@ -5,6 +5,8 @@ import ComprasModal from './components/ComprasModal';
 import WMSModal from './components/WMSModal';
 import Vendas from './components/Vendas';
 import Financeiro from './components/Financeiro';
+import Parceiros from './components/Parceiros';
+import Produtos from './components/Produtos';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -52,6 +54,12 @@ function App() {
               <button onClick={() => setActiveTab('financeiro')} className={navClass('financeiro')}>
                   💳 Financeiro
               </button>
+              <button onClick={() => setActiveTab('parceiros')} className={navClass('parceiros')}>
+                  🤝 Parceiros
+              </button>
+              <button onClick={() => setActiveTab('produtos')} className={navClass('produtos')}>
+                  📦 Produtos
+              </button>
           </nav>
           <div className="p-4 border-t border-slate-700 text-xs text-slate-500 text-center">
               v1.0.0 &copy; 2026
@@ -89,6 +97,8 @@ function App() {
               {activeTab === 'wms' && <WMSModal setToast={setToast} />}
               {activeTab === 'vendas' && <Vendas setToast={setToast} />}
               {activeTab === 'financeiro' && <Financeiro />}
+              {activeTab === 'parceiros' && <Parceiros setToast={setToast} />}
+              {activeTab === 'produtos' && <Produtos setToast={setToast} />}
           </div>
       </main>
 

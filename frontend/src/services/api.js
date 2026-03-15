@@ -38,6 +38,42 @@ export const api = {
         return res.json();
     },
 
+    async getClientes() {
+        const res = await fetch(`${API_URL}/api/v1/vendas/clientes/`);
+        return res.json();
+    },
+    async criarCliente(cliente) {
+        const res = await fetch(`${API_URL}/api/v1/vendas/clientes/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cliente)
+        });
+        return res.json();
+    },
+    async getFornecedores() {
+        const res = await fetch(`${API_URL}/api/v1/erp/fornecedores/`);
+        return res.json();
+    },
+    async criarFornecedor(fornecedor) {
+        const res = await fetch(`${API_URL}/api/v1/erp/fornecedores/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fornecedor)
+        });
+        return res.json();
+    },
+    async getProdutos() {
+        const res = await fetch(`${API_URL}/api/v1/erp/produtos/`);
+        return res.json();
+    },
+    async criarProduto(produto) {
+        const res = await fetch(`${API_URL}/api/v1/erp/produtos/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(produto)
+        });
+        return res.json();
+    },
     async receberMercadoria(pedidoId, dataRecebimento) {
         const payload = {
             pedido_id: pedidoId,
