@@ -1,98 +1,58 @@
-"""
-Router — Contratos
-Contrato com fornecedor/cliente, alertas de vencimento, renovação
-"""
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from typing import Optional
-from datetime import date, datetime
-
 from infrastructure.database import get_db
-from infrastructure.orm_models.phase6_models import ContratoORM
+from infrastructure.orm_models.crm_models import ContratoORM
+from infrastructure.orm_models.robust_models import ClienteORM
+from pydantic import BaseModel
+from typing import List, Optional
+from datetime import datetime
 
-router = APIRouter(prefix="/contratos", tags=["Contratos"])
-
+router = APIRouter(prefix="/contratos", tags=["Gestão de Contratos"])
 
 class ContratoDTO(BaseModel):
     id: str
-    tipo: str  # FORNECEDOR, CLIENTE, SERVICO
-    parceiro_id: str
-    parceiro_nome: str
-    objeto: str
-    valor_mensal: float = 0.0
+    cliente_id: str
+    titulo: str
+    valor_recorrente: float
+    dia_faturamento: int = 1
     data_inicio: str
-    data_fim: str
-    numero_contrato: Optional[str] = None
-    condicao_pagamento: Optional[str] = None
-    observacao: Optional[str] = None
+    data_fim: Optional[str] = None
 
-
-class RenovacaoDTO(BaseModel):
-    nova_data_fim: str
-    novo_valor_mensal: Optional[float] = None
-
+@router.get("/")
+def listar_contratos(db: Session = Depends(get_db)):
+    contratos = db.query(ContratoORM).all()
+    return [
+        {
+            "id": c.id,
+            "cliente": c.cliente.razao_social if c.cliente else "N/A",
+            "titulo": c.titulo,
+            "valor": c.valor_recorrente,
+            "dia_faturamento": c.dia_faturamento,
+            "status": "Ativo" if c.ativo else "Inativo"
+        } for c in contratos
+    ]
 
 @router.post("/", status_code=201)
 def criar_contrato(dto: ContratoDTO, db: Session = Depends(get_db)):
     contrato = ContratoORM(
-        id=dto.id, tipo=dto.tipo, parceiro_id=dto.parceiro_id,
-        parceiro_nome=dto.parceiro_nome, objeto=dto.objeto,
-        valor_mensal=dto.valor_mensal,
-        data_inicio=date.fromisoformat(dto.data_inicio),
-        data_fim=date.fromisoformat(dto.data_fim),
-        status="ATIVO", numero_contrato=dto.numero_contrato,
-        condicao_pagamento=dto.condicao_pagamento, observacao=dto.observacao
+        id=dto.id,
+        cliente_id=dto.cliente_id,
+        titulo=dto.titulo,
+        valor_recorrente=dto.valor_recorrente,
+        dia_faturamento=dto.dia_faturamento,
+        data_inicio=datetime.strptime(dto.data_inicio, "%Y-%m-%d").date(),
+        data_fim=datetime.strptime(dto.data_fim, "%Y-%m-%d").date() if dto.data_fim else None
     )
     db.add(contrato)
     db.commit()
-    return {"message": "Contrato criado", "id": dto.id}
+    return {"message": "Contrato registrado"}
 
-
-@router.get("/")
-def listar_contratos(db: Session = Depends(get_db)):
-    contratos = db.query(ContratoORM).order_by(ContratoORM.data_fim).all()
-    hoje = date.today()
-    return [
-        {
-            "id": c.id, "tipo": c.tipo, "parceiro_nome": c.parceiro_nome,
-            "objeto": c.objeto[:60] + "..." if len(c.objeto) > 60 else c.objeto,
-            "valor_mensal": float(c.valor_mensal or 0),
-            "data_inicio": str(c.data_inicio), "data_fim": str(c.data_fim),
-            "status": c.status, "numero_contrato": c.numero_contrato,
-            "dias_para_vencer": (c.data_fim - hoje).days,
-            "alerta_vencimento": 0 < (c.data_fim - hoje).days <= 30,
-        }
-        for c in contratos
-    ]
-
-
-@router.get("/vencendo/")
-def contratos_vencendo(dias: int = 30, db: Session = Depends(get_db)):
-    """Contratos que vencem nos próximos N dias."""
-    todos = listar_contratos(db)
-    return [c for c in todos if 0 < c["dias_para_vencer"] <= dias and c["status"] == "ATIVO"]
-
-
-@router.patch("/{contrato_id}/renovar")
-def renovar_contrato(contrato_id: str, dto: RenovacaoDTO, db: Session = Depends(get_db)):
-    contrato = db.query(ContratoORM).filter(ContratoORM.id == contrato_id).first()
+@router.post("/{id}/faturar")
+def gerar_faturamento_contrato(id: str, db: Session = Depends(get_db)):
+    """Simula a geração de um pedido de venda baseado no contrato."""
+    contrato = db.query(ContratoORM).filter(ContratoORM.id == id).first()
     if not contrato:
-        raise HTTPException(status_code=404, detail="Contrato não encontrado")
-    contrato.data_inicio = date.today()
-    contrato.data_fim = date.fromisoformat(dto.nova_data_fim)
-    if dto.novo_valor_mensal is not None:
-        contrato.valor_mensal = dto.novo_valor_mensal
-    contrato.status = "RENOVADO"
-    db.commit()
-    return {"message": "Contrato renovado", "nova_data_fim": dto.nova_data_fim}
-
-
-@router.patch("/{contrato_id}/cancelar")
-def cancelar_contrato(contrato_id: str, db: Session = Depends(get_db)):
-    contrato = db.query(ContratoORM).filter(ContratoORM.id == contrato_id).first()
-    if not contrato:
-        raise HTTPException(status_code=404, detail="Contrato não encontrado")
-    contrato.status = "CANCELADO"
-    db.commit()
-    return {"message": "Contrato cancelado"}
+        raise HTTPException(status_code=404, detail="Não encontrado")
+    
+    # Aqui criaria um PedidoVendaORM automaticamente
+    return {"message": f"Faturamento gerado para o contrato {id} no valor de R$ {contrato.valor_recorrente}"}

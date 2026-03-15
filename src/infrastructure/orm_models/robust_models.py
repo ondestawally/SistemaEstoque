@@ -40,8 +40,10 @@ class PedidoVendaORM(Base):
     status_logistica = Column(SQLEnum(StatusLogistica), default=StatusLogistica.PENDENTE)
     codigo_rastreio = Column(String, nullable=True)
     valor_total = Column(Float, default=0.0)
+    vendedor_id = Column(String, ForeignKey("vendedores.id"), nullable=True)
     
     cliente = relationship("ClienteORM")
+    vendedor = relationship("VendedorORM")
     itens = relationship("ItemPedidoVendaORM", back_populates="pedido")
 
 class ItemPedidoVendaORM(Base):

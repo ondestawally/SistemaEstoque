@@ -20,6 +20,8 @@ import Controlling from './components/Controlling';
 import Login from './components/Login';
 import Auditoria from './components/Auditoria';
 import Analytics from './components/Analytics';
+import CRM from './components/CRM';
+import Comissoes from './components/Comissoes';
 import Expedicao from './components/Expedicao';
 
 const NAV_GROUPS = [
@@ -56,7 +58,9 @@ const NAV_GROUPS = [
       { id: 'compras', icon: '🛒', label: 'Compras (OC)', roles: ['ADMIN', 'LOGISTICS_USER'] },
       { id: 'wms', icon: '🏭', label: 'Armazém (WMS)', roles: ['ADMIN', 'LOGISTICS_USER'] },
       { id: 'vendas', icon: '💰', label: 'Vendas', roles: ['ADMIN', 'SALES_USER'] },
+      { id: 'crm', icon: '🤝', label: 'CRM', roles: ['ADMIN', 'SALES_USER'] },
       { id: 'financeiro', icon: '💳', label: 'Financeiro', roles: ['ADMIN', 'FINANCE_USER'] },
+      { id: 'comissoes', icon: '📈', label: 'Comissões', roles: ['ADMIN', 'SALES_USER', 'FINANCE_USER'] },
       { id: 'parceiros', icon: '🤝', label: 'Parceiros', roles: ['ADMIN', 'SALES_USER', 'LOGISTICS_USER'] },
       { id: 'produtos', icon: '📦', label: 'Produtos', roles: ['ADMIN', 'SALES_USER', 'LOGISTICS_USER'] },
     ]
@@ -76,7 +80,9 @@ const PAGE_TITLES = {
   compras: 'Compras (OC)',
   wms: 'Armazém WMS',
   vendas: 'Vendas',
+  crm: 'CRM',
   financeiro: 'Financeiro',
+  comissoes: 'Comissões',
   parceiros: 'Parceiros',
   produtos: 'Produtos',
   auditoria: 'Trilha de Auditoria (Audit Log)',
@@ -238,7 +244,9 @@ function App() {
           {activeTab === 'compras' && <ComprasModal setToast={setToast} />}
           {activeTab === 'wms' && <WMSModal setToast={setToast} />}
           {activeTab === 'vendas' && <Vendas setToast={setToast} />}
+          {activeTab === 'crm' && <CRM setToast={setToast} />}
           {activeTab === 'financeiro' && <Financeiro />}
+          {activeTab === 'comissoes' && <Comissoes setToast={setToast} />}
           {activeTab === 'parceiros' && <Parceiros setToast={setToast} />}
           {activeTab === 'produtos' && <Produtos setToast={setToast} />}
           {/* Fase 6 */}

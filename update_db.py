@@ -9,6 +9,8 @@ import infrastructure.orm_models.rh_models
 import infrastructure.orm_models.controlling_models
 # Fase 8
 import infrastructure.orm_models.auth_models
+# Fase 11
+import infrastructure.orm_models.crm_models
 
 print("Updating database schema in Supabase...")
 Base.metadata.create_all(bind=engine)

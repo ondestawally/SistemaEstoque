@@ -142,6 +142,20 @@ export const api = {
     getEstoqueCritico: () => req('/api/v1/logistica/estoque-critico'),
     getHistoricoPrecos: (id) => req(`/api/v1/logistica/historico-precos/${id}`),
 
+    // ── CRM & VENDAS ──────────────────────────────────────────
+    getLeads: () => req('/api/v1/crm/leads'),
+    criarLead: (d) => req('/api/v1/crm/leads', 'POST', d),
+    getOportunidades: () => req('/api/v1/crm/oportunidades'),
+    criarOportunidade: (d) => req('/api/v1/crm/oportunidades', 'POST', d),
+    avancarEtapaCRM: (id, etapa) => req(`/api/v1/crm/oportunidades/${id}/etapa?etapa=${etapa}`, 'PATCH'),
+    getFunilVendas: () => req('/api/v1/crm/funil'),
+    getVendedores: () => req('/api/v1/crm/vendedores'),
+
+    // ── CONTRATOS ─────────────────────────────────────────────
+    getContratos: () => req('/api/v1/contratos'),
+    criarContrato: (d) => req('/api/v1/contratos', 'POST', d),
+    faturarContrato: (id) => req(`/api/v1/contratos/${id}/faturar`, 'POST'),
+
     // ── AUTENTICAÇÃO ──────────────────────────────────────────
     async login(username, password) {
         const formData = new FormData();
