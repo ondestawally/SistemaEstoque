@@ -2,13 +2,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from infrastructure.database import engine, Base
 
-from presentation.api.routers import erp_router, wms_router
-from presentation.api.routers import erp_router, wms_router, dashboard_router
+from presentation.api.routers import erp_router, wms_router, dashboard_router, robust_routers
+from presentation.api.middlewares.error_handler import add_exception_handlers
 
 # A cargo do script de migration ou start_app
 # Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="ERP & WMS API")
+add_exception_handlers(app)
 
 # CORS
 app.add_middleware(
@@ -24,6 +25,8 @@ from fastapi.staticfiles import StaticFiles
 app.include_router(erp_router.router, prefix="/api/v1")
 app.include_router(wms_router.router, prefix="/api/v1")
 app.include_router(dashboard_router.router, prefix="/api/v1")
+app.include_router(robust_routers.vendas_router, prefix="/api/v1")
+app.include_router(robust_routers.financeiro_router, prefix="/api/v1")
 
 # Serve a Single Page Application (UI)
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

@@ -32,16 +32,18 @@ const Dashboard = () => {
               <span className="text-3xl font-bold text-slate-800">{stats.cards.total_produtos}</span>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col gap-2">
-              <span className="text-sm font-medium text-brand-600">Pedidos ERP</span>
-              <span className="text-3xl font-bold text-brand-700">{stats.cards.total_pedidos}</span>
+              <span className="text-sm font-medium text-emerald-600">Total Vendas</span>
+              <span className="text-3xl font-bold text-emerald-700">R$ {stats.cards.total_vendas?.toLocaleString()}</span>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col gap-2">
               <span className="text-sm font-medium text-indigo-500">Lotes WMS</span>
               <span className="text-3xl font-bold text-indigo-600">{stats.cards.total_lotes}</span>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col gap-2">
-              <span className="text-sm font-medium text-emerald-500">System Health</span>
-              <span className="text-3xl font-bold text-emerald-600">{stats.cards.health}</span>
+              <span className="text-sm font-medium text-amber-500">Saldo em Caixa</span>
+              <span className={`text-3xl font-bold ${stats.cards.saldo_caixa >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                R$ {stats.cards.saldo_caixa?.toLocaleString()}
+              </span>
           </div>
       </div>
 

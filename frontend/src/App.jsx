@@ -3,6 +3,8 @@ import { api } from './services/api';
 import Dashboard from './components/Dashboard';
 import ComprasModal from './components/ComprasModal';
 import WMSModal from './components/WMSModal';
+import Vendas from './components/Vendas';
+import Financeiro from './components/Financeiro';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -44,6 +46,12 @@ function App() {
               <button onClick={() => setActiveTab('wms')} className={navClass('wms')}>
                   🏭 Armazém (WMS)
               </button>
+              <button onClick={() => setActiveTab('vendas')} className={navClass('vendas')}>
+                  💰 Vendas (ERP)
+              </button>
+              <button onClick={() => setActiveTab('financeiro')} className={navClass('financeiro')}>
+                  💳 Financeiro
+              </button>
           </nav>
           <div className="p-4 border-t border-slate-700 text-xs text-slate-500 text-center">
               v1.0.0 &copy; 2026
@@ -79,6 +87,8 @@ function App() {
               {activeTab === 'dashboard' && <Dashboard />}
               {activeTab === 'compras' && <ComprasModal setToast={setToast} />}
               {activeTab === 'wms' && <WMSModal setToast={setToast} />}
+              {activeTab === 'vendas' && <Vendas setToast={setToast} />}
+              {activeTab === 'financeiro' && <Financeiro />}
           </div>
       </main>
 

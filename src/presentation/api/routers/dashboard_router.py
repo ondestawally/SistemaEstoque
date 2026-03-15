@@ -9,17 +9,20 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
 @router.get("/stats")
 def get_dashboard_stats(db: Session = Depends(get_db)):
-    # 1. Total de Produtos
+    # 1. Totais básicos
     total_produtos = db.query(ProdutoORM).count()
-    
-    # 2. Total de Pedidos (Simplificado - Todos)
-    total_pedidos = db.query(PedidoORM).count()
-    
-    # 3. Lotes no WMS
+    total_pedidos_compra = db.query(PedidoORM).count()
     total_lotes = db.query(LoteORM).count()
     
-    # 4. Distribuição de Estoque por Produto (para o gráfico)
-    # Buscamos a soma de quantidade disponível agrupada por produto_id
+    # 2. Novas Métricas Robustas
+    from infrastructure.orm_models.robust_models import LancamentoFinanceiroORM, ClienteORM
+    total_clientes = db.query(ClienteORM).count()
+    
+    lancamentos = db.query(LancamentoFinanceiroORM).all()
+    receita = sum(l.valor for l in lancamentos if l.tipo == 'RECEBER')
+    despesa = sum(l.valor for l in lancamentos if l.tipo == 'PAGAR')
+
+    # 3. Distribuição de Estoque
     distribuicao = db.query(
         LoteORM.produto_id, 
         func.sum(LoteORM.quantidade_disponivel).label("total")
@@ -27,7 +30,6 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
     
     chart_data = []
     for d in distribuicao:
-        # Tenta buscar o nome do produto para o label
         prod = db.query(ProdutoORM).filter(ProdutoORM.id == d.produto_id).first()
         nome = prod.nome if prod else d.produto_id
         chart_data.append({"name": nome, "value": int(d.total)})
@@ -35,9 +37,9 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
     return {
         "cards": {
             "total_produtos": total_produtos,
-            "total_pedidos": total_pedidos,
+            "total_vendas": receita,
             "total_lotes": total_lotes,
-            "health": "100%"
+            "saldo_caixa": receita - despesa
         },
         "chart_data": chart_data
     }

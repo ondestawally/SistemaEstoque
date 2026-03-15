@@ -1,66 +1,88 @@
-# Sistema ERP & WMS
+# Admin ERP & WMS Enterprise
 
-Um sistema ERP (Enterprise Resource Planning) integrado com um WMS (Warehouse Management System) construído com base nas melhores práticas de Programação Orientada a Objetos (POO), Clean Architecture (Arquitetura Limpa) e princípios SOLID.
-
-## 🎯 Objetivo
-Oferecer um sistema robusto para gestão corporativa (ERP) focado fortemente no gerenciamento eficiente de armazenagem, controle de estoque e logística (WMS).
-
-## 🏛️ Arquitetura
-O projeto segue uma arquitetura em camadas para garantir separação de responsabilidades (Separation of Concerns):
-
-1. **Domain Layer (Camada de Domínio)**
-   - Entidades de Negócio (ex: Produto, Lote, Armazém, Usuário).
-   - Value Objects (ex: Dinheiro, CNPJ, Dimensões).
-   - Exceções de Domínio.
-2. **Application Layer (Camada de Aplicação)**
-   - Casos de Uso (Use Cases) do ERP e WMS (ex: `ReceberMercadoria`, `AlocarProduto`, `FaturarPedido`).
-   - Interfaces (Portas) para repositórios e serviços externos.
-3. **Infrastructure Layer (Camada de Infraestrutura)**
-   - Implementação de Repositórios (Banco de Dados, ORMs).
-   - Integrações de Serviços Externos (APIs de emissão de NF, Correios/Transportadoras).
-4. **Presentation/Interface Layer (Camada de Apresentação)**
-   - Controladores (API REST, CLI, ou Interface Gráfica).
-
-## 📦 Módulos Principais
-
-### 1. WMS (Warehouse Management System)
-* Gestão de Locais de Armazenagem (Ruas, Prateleiras, Posições).
-* Controle de Lotes e Validade.
-* Recebimento, Conferência e Armazenagem (Putaway).
-* Separação (Picking), Embalagem (Packing) e Expedição.
-* Rastreabilidade total das movimentações de estoque.
-
-### 2. ERP (Enterprise Resource Planning)
-* **Gestão de Compras:** Fornecedores, Gestão de Demandas, e Controle de Requisições.
-  * **Ordem de Compra (OC):** Compras pontuais ou sem disputa formal.
-  * **Ordem de Fornecimento (OF):** Compras atreladas a contratos de fornecimento pré-estabelecidos.
-  * NFs de Entrada e conciliação físico-financeira.
-* **Gestão de Vendas:** Clientes, Pedidos de Venda, Faturamento, NFs de Saída.
-* **Gestão Financeira:** Contas a Pagar/Receber, Fluxo de Caixa.
-
-## 🛠️ Tecnologias
-- **Linguagem:** Python
-- **Abordagem:** Orientação a Objetos (POO)
-- **Design Patterns:** Repository, Factory, Strategy, Observer.
-
-## 🚀 Como Iniciar
-
-1. Clone o repositório ou acesse a pasta do projeto.
-2. Ative o ambiente virtual (já configurado em `.venv`):
-   ```bash
-   # Windows
-   .venv\Scripts\activate
-   # Linux/Mac
-   source .venv/bin/activate
-   ```
-3. Instale as dependências (em breve será adicionado o `requirements.txt`).
-4. Execute o projeto.
-
-## 🤝 Práticas de Desenvolvimento (Diretrizes para nossa construção)
-- **SOLID:** Todo o código implementado seguirá princípios SOLID.
-- **Test-Driven Development (TDD):** Aconselha-se criar os testes de unidade junto com os casos de uso.
-- **Type Hinting:** Uso intensivo de tipagem estática no Python (`typing`) para facilitar a documentação e prevenir erros.
-- **Docstrings:** Todas as classes principais devem ter documentação clara de suas responsabilidades.
+Sistema integrado de gestão corporativa (ERP) e logística (WMS) de alta performance, construído com **Arquitetura Limpa (Clean Architecture)**, backend asincrônico em **Python** e frontend reativo em **React**.
 
 ---
-*Em desenvolvimento...*
+
+## 🚀 Tecnologias e Infraestrutura
+
+O sistema utiliza as tecnologias mais modernas do mercado para garantir escalabilidade e separação de responsabilidades:
+
+- **Backend**: Python 3.11 + FastAPI (Rápido, tipado e asincrônico).
+- **ORM / Banco de Dados**: SQLAlchemy + PostgreSQL hospedado no **Supabase**.
+- **Frontend**: React 19 + Vite + TailwindCSS v4 + Recharts (BI & Dashboards).
+- **Infraestrutura Cloud**: 
+  - API: Hospedada no **Render.com** (via Docker).
+  - Web: Hospedada na **Vercel** (Edge Computing).
+  - DB: Gerenciado no **Supabase**.
+
+---
+
+## 🏛️ Estrutura de Pastas (Clean Architecture)
+
+Nosso projeto segue rigorosamente a separação em camadas para facilitar a manutenção e testes:
+
+```text
+SistemaEstoque/
+├── src/
+│   ├── domain/         # Núcleo: Entidades, Value Objects e Regras de Negócio Puras.
+│   ├── application/    # Casos de Uso: Orquestração da lógica e Interfaces (Ports).
+│   ├── infrastructure/ # Detalhes: Banco de Dados, Repositórios SQLAlchemy, .env.
+│   └── presentation/   # Interface: Rotas FastAPI (ERP, WMS, Dashboard).
+├── frontend/           # Aplicação React (Dashboard, Modais, Services API).
+├── tests/              # Testes unitários e de integração (Pytest).
+├── Dockerfile          # Empacotamento para Deploy Cloud.
+└── requirements.txt    # Dependências do Backend.
+```
+
+---
+
+## 🛠️ Como Iniciar Localmente
+
+### 1. Requisitos
+- Python 3.11+
+- Node.js & npm
+
+### 2. Backend (FastAPI)
+1. Navegue até a raiz e ative o ambiente virtual:
+   ```bash
+   .venv\Scripts\activate
+   ```
+2. Instale as dependências:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Configure o arquivo `.env` com sua `DATABASE_URL` do Supabase.
+4. Inicie o servidor:
+   ```bash
+   uvicorn src.main:app --port 8000 --reload
+   ```
+
+### 3. Frontend (React)
+1. Navegue até a pasta `frontend`:
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+2. Acesse: `http://localhost:5173`
+
+---
+
+## 📊 Principais Funcionalidades
+
+- **Dashboard BI**: Gráficos dinâmicos de distribuição de estoque e saúde do sistema.
+- **Módulo ERP**: Cadastro de produtos, fornecedores e geração de ordens de compra.
+- **Módulo WMS**: Controle de locais de armazenagem, lotes, validade e alocação.
+- **Segurança**: Validação rigorosa de dados (CNPJ, Quantidades) via Pydantic.
+- **Cloud Ready**: Configurações prontas para deploy em escala.
+
+---
+
+## 🌍 Deploy
+
+- **Instruções para Render (Backend)**: Conecte seu GitHub, aponte para o Dockerfile e injete a `DATABASE_URL`.
+- **Instruções para Vercel (Frontend)**: Conecte seu GitHub, defina o `Root Directory` como `frontend` e injete a `VITE_API_URL`.
+
+---
+*Desenvolvido com foco em excelência técnica e agilidade logística.*

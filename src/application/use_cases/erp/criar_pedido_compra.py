@@ -6,14 +6,14 @@ from domain.value_objects import Money
 from domain.erp.compras import OrdemCompra, ItemPedido
 from application.ports.repositories import FornecedorRepository, ProdutoRepository, PedidoRepository
 
-@dataclass
-class ItemDto:
+from pydantic import BaseModel, Field, validator
+
+class ItemDto(BaseModel):
     produto_id: str
-    quantidade: int
+    quantidade: int = Field(..., gt=0)
     valor_unitario: str # Ex: "150.00"
 
-@dataclass
-class CriarPedidoCompraDto:
+class CriarPedidoCompraDto(BaseModel):
     pedido_id: str
     fornecedor_id: str
     itens: List[ItemDto]
