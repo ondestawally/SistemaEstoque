@@ -1,5 +1,5 @@
 // Em produção, isso virá das variáveis de ambiente do Vercel
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.15.72:8000';
 
 const req = async (path, method = 'GET', body = null) => {
     const token = localStorage.getItem('erp_token');

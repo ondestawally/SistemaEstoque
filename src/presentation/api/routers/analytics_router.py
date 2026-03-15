@@ -3,10 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime, timedelta
 from infrastructure.database import get_db
-from infrastructure.orm_models.estoque_models import ProdutoORM, MovimentacaoEstoqueORM
-from infrastructure.orm_models.compras_models import PedidoCompraORM
-from infrastructure.orm_models.vendas_models import PedidoVendaORM
-from infrastructure.orm_models.financeiro_models import LancamentoFinanceiroORM
+from infrastructure.orm_models.erp_models import ProdutoORM, PedidoORM as PedidoCompraORM
+from infrastructure.orm_models.robust_models import PedidoVendaORM, LancamentoFinanceiroORM
 from presentation.api.routers.auth_router import require_role
 
 router = APIRouter(

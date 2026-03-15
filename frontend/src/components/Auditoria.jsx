@@ -7,7 +7,7 @@ const Auditoria = () => {
 
   useEffect(() => {
     // Como ainda não criamos o endpoint de listagem de logs, vamos simular ou criar agora no auth_router
-    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/auth/audit-logs`, {
+    fetch(`${import.meta.env.VITE_API_URL || 'http://192.168.15.72:8000'}/api/v1/auth/audit-logs`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('erp_token')}` }
     })
       .then(r => r.json())

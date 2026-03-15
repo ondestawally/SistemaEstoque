@@ -3,7 +3,7 @@ import { api } from '../services/api';
 
 const Financeiro = () => {
   const [data, setData] = useState({ resumo: { total_receber: 0, total_pagar: 0, saldo: 0 }, detalhes: [] });
-  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const BASE_URL = import.meta.env.VITE_API_URL || 'http://192.168.15.72:8000';
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/v1/financeiro/fluxo-caixa/`)

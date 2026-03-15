@@ -8,7 +8,7 @@ const Expedicao = ({ setToast }) => {
 
     const fetchPendentes = () => {
         const token = localStorage.getItem('erp_token');
-        const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const apiBase = import.meta.env.VITE_API_URL || 'http://192.168.15.72:8000';
         
         fetch(`${apiBase}/api/v1/logistica/expedicao/pendentes`, {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -27,7 +27,7 @@ const Expedicao = ({ setToast }) => {
 
     const avancarStatus = (id) => {
         const token = localStorage.getItem('erp_token');
-        const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const apiBase = import.meta.env.VITE_API_URL || 'http://192.168.15.72:8000';
 
         fetch(`${apiBase}/api/v1/logistica/expedicao/${id}/avancar`, {
             method: 'POST',
@@ -43,7 +43,7 @@ const Expedicao = ({ setToast }) => {
 
     const finalizarDespacho = () => {
         const token = localStorage.getItem('erp_token');
-        const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const apiBase = import.meta.env.VITE_API_URL || 'http://192.168.15.72:8000';
 
         fetch(`${apiBase}/api/v1/logistica/expedicao/${rastreioModal}/despachar`, {
             method: 'POST',

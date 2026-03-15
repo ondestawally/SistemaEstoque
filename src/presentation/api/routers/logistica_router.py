@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from infrastructure.database import get_db
 from infrastructure.orm_models.robust_models import PedidoVendaORM, StatusPedidoVenda, StatusLogistica
-from infrastructure.orm_models.estoque_models import ProdutoORM
+from infrastructure.orm_models.erp_models import ProdutoORM
 from infrastructure.orm_models.phase6_models import ItemNotaFiscalEntradaORM, NotaFiscalEntradaORM, ParametroEstoqueORM
 from presentation.api.routers.auth_router import require_role, get_current_user
 from pydantic import BaseModel

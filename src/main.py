@@ -3,12 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from infrastructure.database import engine, Base
 from pathlib import Path
 
-from presentation.api.routers import erp_router, wms_router, dashboard_router, robust_routers
 from presentation.api.routers import (
-    auth_router, erp_router, wms_router, compras_router, financeiro_router,
-    contabilidade_router, fiscal_router, estoque_router, faturamento_router,
-    qualidade_router, contratos_router, logistica_router, dashboard_router,
-    crm_router, rh_router, controlling_router, analytics_router
+    auth_router, erp_router, wms_router, compras_router, 
+    contabilidade_router, fiscal_router, estoque_router, faturamento_router, 
+    contratos_router, logistica_router, dashboard_router,
+    crm_router, rh_router, controlling_router, analytics_router, robust_routers
 )
 from presentation.api.middlewares.error_handler import add_exception_handlers
 

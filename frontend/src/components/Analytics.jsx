@@ -10,7 +10,7 @@ const Analytics = () => {
     useEffect(() => {
         const token = localStorage.getItem('erp_token');
         const headers = { 'Authorization': `Bearer ${token}` };
-        const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        const apiBase = import.meta.env.VITE_API_URL || 'http://192.168.15.72:8000';
 
         Promise.all([
             fetch(`${apiBase}/api/v1/analytics/vendas-vs-compras`, { headers }).then(r => r.json()),
