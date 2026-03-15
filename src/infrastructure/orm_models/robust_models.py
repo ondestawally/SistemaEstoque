@@ -9,6 +9,13 @@ class StatusPedidoVenda(enum.Enum):
     FATURADO = "FATURADO"
     CANCELADO = "CANCELADO"
 
+class StatusLogistica(enum.Enum):
+    PENDENTE = "PENDENTE"
+    PICKING = "PICKING"
+    PACKING = "PACKING"
+    DESPACHADO = "DESPACHADO"
+    ENTREGUE = "ENTREGUE"
+
 class StatusFinanceiro(enum.Enum):
     PENDENTE = "PENDENTE"
     PAGO = "PAGO"
@@ -30,6 +37,9 @@ class PedidoVendaORM(Base):
     cliente_id = Column(String, ForeignKey("clientes.id"))
     data_pedido = Column(Date, nullable=False)
     status = Column(SQLEnum(StatusPedidoVenda), default=StatusPedidoVenda.ORCAMENTO)
+    status_logistica = Column(SQLEnum(StatusLogistica), default=StatusLogistica.PENDENTE)
+    codigo_rastreio = Column(String, nullable=True)
+    valor_total = Column(Float, default=0.0)
     
     cliente = relationship("ClienteORM")
     itens = relationship("ItemPedidoVendaORM", back_populates="pedido")

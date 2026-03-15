@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+:root {
+  --brand-500: #3b82f6;
+  --brand-600: #2563eb;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 body {
     background-color: #f8fafc; /* bg-slate-50 */
     color: #1e293b; /* text-slate-800 */
@@ -8,11 +14,17 @@ body {
     font-family: ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .mobile-hide { display: none !important; }
+  .mobile-full { width: 100% !important; flex-basis: 100% !important; }
+}
+
 .fade-in {
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn var(--transition-smooth);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }

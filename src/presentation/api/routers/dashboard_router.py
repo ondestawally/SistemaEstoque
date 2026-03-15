@@ -10,7 +10,7 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
 @router.get("/stats")
 def get_dashboard_stats(db: Session = Depends(get_db)):
-    from infrastructure.orm_models.robust_models import LancamentoFinanceiroORM, ClienteORM, PedidoVendaORM
+    from infrastructure.orm_models.robust_models import LancamentoFinanceiroORM, ClienteORM, PedidoVendaORM, StatusPedidoVenda
     from infrastructure.orm_models.erp_models import FornecedorORM
 
     # 1. Cards numéricos
@@ -63,6 +63,30 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         nome = prod.nome if prod else dist.produto_id
         chart_data.append({"name": nome, "value": int(dist.total)})
 
+    # 4. Métricas Fase 6 (Enterprise)
+    from infrastructure.orm_models.phase6_models import (
+        NotaFiscalEntradaORM, NotaFiscalSaidaORM, LancamentoContabilORM,
+        ContratoORM, SolicitacaoCompraORM
+    )
+    # Valor Total Estoque (Custo Médio aproximado baseado em entradas)
+    valor_estoque = db.query(func.sum(NotaFiscalEntradaORM.valor_total)).scalar() or 0
+    
+    # Contratos Ativos
+    contratos_ativos = db.query(ContratoORM).filter(ContratoORM.data_fim >= hoje).count()
+    
+    # Pendências Compras
+    compras_pendentes = db.query(SolicitacaoCompraORM).filter(SolicitacaoCompraORM).count()
+    
+    # Pendências Logística (Faturados aguardando expedição)
+    expedicao_pendente = db.query(PedidoVendaORM).filter(
+        PedidoVendaORM.status == StatusPedidoVenda.FATURADO,
+        PedidoVendaORM.codigo_rastreio == None
+    ).count()
+
+    # Saldo Contábil do mês
+    debito_total = db.query(func.sum(LancamentoContabilORM.total_debitos)).scalar() or 0
+    credito_total = db.query(func.sum(LancamentoContabilORM.total_creditos)).scalar() or 0
+
     return {
         "cards": {
             "total_produtos": total_produtos,
@@ -74,7 +98,14 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
             "total_vendas": receita,
             "saldo_caixa": receita - despesa,
             "total_despesas": despesa,
+            # Novos Fase 6
+            "valor_estoque": float(valor_estoque),
+            "contratos_ativos": contratos_ativos,
+            "compras_pendentes": compras_pendentes,
+            "expedicao_pendente": expedicao_pendente,
+            "saldo_contabil": float(debito_total - credito_total)
         },
         "serie_temporal": serie,
         "chart_data": chart_data,
     }
+

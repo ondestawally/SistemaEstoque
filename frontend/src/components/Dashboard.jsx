@@ -30,7 +30,8 @@ const Dashboard = () => {
     cards: {
       total_produtos: 0, total_lotes: 0, total_clientes: 0,
       total_fornecedores: 0, total_pedidos_compra: 0, total_pedidos_venda: 0,
-      total_vendas: 0, saldo_caixa: 0, total_despesas: 0
+      total_vendas: 0, saldo_caixa: 0, total_despesas: 0,
+      valor_estoque: 0, contratos_ativos: 0, compras_pendentes: 0, saldo_contabil: 0
     },
     serie_temporal: [],
     chart_data: []
@@ -75,6 +76,17 @@ const Dashboard = () => {
           <StatCard label="Fornecedores" value={stats.cards.total_fornecedores} color="amber" />
           <StatCard label="OCs" value={stats.cards.total_pedidos_compra} color="slate" />
           <StatCard label="Vendas" value={stats.cards.total_pedidos_venda} color="indigo" />
+        </div>
+      </div>
+
+      {/* Cards Row 3 — Fase 6 (Enterprise) */}
+      <div>
+        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Enterprise (Fase 6)</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard label="Valor em Estoque" value={fmt(stats.cards.valor_estoque)} color="amber" sub="Custo Total NF Entradas" />
+          <StatCard label="Contratos Ativos" value={stats.cards.contratos_ativos} color="indigo" sub="Gestão de Contratos" />
+          <StatCard label="Compras Pendentes" value={stats.cards.compras_pendentes} color="rose" sub="Solicitações em Aberto" />
+          <StatCard label="Saldo Contábil" value={fmt(stats.cards.saldo_contabil)} color="cyan" sub="Débitos − Créditos" />
         </div>
       </div>
 
