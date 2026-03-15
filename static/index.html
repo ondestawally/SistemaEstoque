@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP & WMS Portal</title>
+    <!-- Tailwind CSS (CDN for Development) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900 text-white flex flex-col shadow-xl z-10 transition-all duration-300">
+        <div class="h-16 flex items-center justify-center border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm">
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-cyan-400">
+                📦 EstoqueAdmin
+            </h1>
+        </div>
+        <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+            <button onclick="navigate('dashboard')" class="nav-btn w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200 bg-brand-600/20 text-brand-400 font-medium">
+                📊 Dashboard
+            </button>
+            <button onclick="navigate('compras')" class="nav-btn w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200 hover:bg-slate-800 text-slate-300">
+                🛒 Compras (ERP)
+            </button>
+            <button onclick="navigate('wms')" class="nav-btn w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200 hover:bg-slate-800 text-slate-300">
+                🏭 Armazém (WMS)
+            </button>
+        </nav>
+        <div class="p-4 border-t border-slate-700 text-xs text-slate-500 text-center">
+            v1.0.0 &copy; 2026
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col relative overflow-y-auto">
+        <!-- Top Nav -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 justify-between sticky top-0 z-10">
+            <h2 id="page-title" class="text-xl font-semibold text-slate-800">Dashboard</h2>
+            <div class="flex items-center gap-3">
+                <span id="api-status" class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-yellow-500"></span>
+                </span>
+                <span class="text-sm text-slate-500 font-medium" id="api-status-text">Conectando...</span>
+            </div>
+        </header>
+
+        <!-- Dynamic Pages -->
+        <div class="p-6 md:p-10 max-w-7xl mx-auto w-full" id="content-container">
+            <!-- Content gets injected here by Javascript -->
+        </div>
+        
+    </main>
+
+    <!-- Global Toast Notifications Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/services.js"></script>
+    <script src="/js/pages.js"></script>
+</body>
+</html>
