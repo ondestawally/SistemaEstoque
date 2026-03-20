@@ -65,7 +65,7 @@ class PedidoRepositorySQLAlchemy:
         self.fornecedor_repo = fornecedor_repo
         self.produto_repo = produto_repo
 
-    def salvar(self, pedido: OrdemCompra) -> None:
+    def salvar(self, pedido: PedidoBase) -> None:
         orm = self.db.query(PedidoORM).filter(PedidoORM.id == pedido.id).first()
         if not orm:
             orm = PedidoORM(id=pedido.id)

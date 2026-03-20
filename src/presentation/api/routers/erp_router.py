@@ -35,7 +35,13 @@ class FornecedorDTO(BaseModel):
 def criar_produto(dto: ProdutoDTO, db: Session = Depends(get_db)):
     from domain.erp.produto import Produto
     repo = ProdutoRepositorySQLAlchemy(db)
-    produto = Produto(id=dto.id, nome=dto.nome, descricao=dto.descricao, codigo_barras=dto.codigo_barras, ativo=dto.ativo)
+    produto = Produto(
+        id=dto.id, 
+        nome=dto.nome, 
+        descricao=dto.descricao or "", 
+        codigo_barras=dto.codigo_barras or "", 
+        ativo=dto.ativo
+    )
     repo.salvar(produto)
     return {"message": "Produto cadastrado"}
 
@@ -102,9 +108,10 @@ def atualizar_status_pedido(pedido_id: str, db: Session = Depends(get_db)):
     pedido = db.query(PedidoORM).filter(PedidoORM.id == pedido_id).first()
     if not pedido:
         raise HTTPException(status_code=404, detail="Pedido não encontrado")
-    proximo = TRANSICOES_OC.get(pedido.status)
+    status_atual: str = pedido.status  # type: ignore - SQLAlchemy Column[str] acts as str
+    proximo = TRANSICOES_OC.get(status_atual)
     if not proximo:
-        raise HTTPException(status_code=400, detail=f"Status '{pedido.status}' não pode ser avançado")
-    pedido.status = proximo
+        raise HTTPException(status_code=400, detail=f"Status '{status_atual}' não pode ser avançado")
+    db.query(PedidoORM).filter(PedidoORM.id == pedido_id).update({"status": proximo})
     db.commit()
     return {"message": f"Status atualizado para {proximo}", "pedido_id": pedido_id, "novo_status": proximo}

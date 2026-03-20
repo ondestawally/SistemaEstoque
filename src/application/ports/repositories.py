@@ -1,9 +1,11 @@
-from typing import Protocol, Optional, List
+from typing import Protocol, Optional, List, TypeVar, Generic
 from domain.erp.produto import Produto
 from domain.erp.fornecedor import Fornecedor
 from domain.erp.compras import PedidoBase
 from domain.wms.lote import Lote
 from domain.wms.localizacao import Armazem
+
+T = TypeVar('T')
 
 class ProdutoRepository(Protocol):
     def buscar_por_id(self, id: str) -> Optional[Produto]:
