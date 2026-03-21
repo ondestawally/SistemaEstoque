@@ -62,6 +62,7 @@ class LancamentoFinanceiroORM(Base):
     tipo = Column(String, nullable=False) # 'PAGAR' ou 'RECEBER'
     origem_id = Column(String, nullable=False)
     valor = Column(Float, nullable=False)
+    data_lancamento = Column(Date, nullable=False)
     vencimento = Column(Date, nullable=False)
     status = Column(SQLEnum(StatusFinanceiro), default=StatusFinanceiro.PENDENTE)
     data_pagamento = Column(Date)

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from './services/api';
+import { GlobalSearch, useGlobalSearch } from './components/GlobalSearch';
 import Dashboard from './components/Dashboard';
 import ComprasModal from './components/ComprasModal';
 import WMSModal from './components/WMSModal';
@@ -97,6 +98,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isOpen: searchOpen, setIsOpen: setSearchOpen } = useGlobalSearch();
 
   useEffect(() => {
     api.getHealth().then(ok => setHealth(ok));
@@ -276,6 +278,18 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Global Search (Ctrl+K) */}
+      <GlobalSearch 
+        isOpen={searchOpen} 
+        onClose={() => setSearchOpen(false)}
+        onSelect={(item) => {
+          if (item.type === 'produto') setActiveTab('produtos');
+          else if (item.type === 'cliente') setActiveTab('parceiros');
+          else if (item.type === 'pedido') setActiveTab('vendas');
+          setToast({ type: 'success', msg: `Navegando para ${item.type}: ${item.nome || item.id || item.razao_social}` });
+        }}
+      />
     </div>
   );
 }

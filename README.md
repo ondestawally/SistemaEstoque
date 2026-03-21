@@ -13,6 +13,8 @@ Sistema integrado de gestão corporativa (ERP) e gerenciamento de armazém (WMS)
 | Database | PostgreSQL (Supabase) | - |
 | Frontend | React + Vite + TailwindCSS | 19.2.4 / 8.0.0 / 4.2.1 |
 | Charts/BI | Recharts | 3.8.0 |
+| Auth | JWT (python-jose) | 3.3.0 |
+| Password | Bcrypt (passlib) | 1.7.4 |
 | Deploy API | Render.com (Docker) | - |
 | Deploy Web | Vercel | - |
 
@@ -23,44 +25,68 @@ Sistema integrado de gestão corporativa (ERP) e gerenciamento de armazém (WMS)
 ```
 SistemaEstoque/
 ├── src/
-│   ├── domain/              # Entidades, Value Objects, Regras de Negócio
-│   │   ├── value_objects.py # CNPJ, Money
-│   │   ├── compras/        # Workflow de compras
-│   │   ├── contabilidade/  # Plano de contas
-│   │   ├── controlling/    # Centros de custo, orçamentos
-│   │   ├── contratos/      # Gestão de contratos
-│   │   ├── erp/            # Produtos, Fornecedores
-│   │   ├── estoque/        # Controle de estoque
-│   │   ├── faturamento/    # Faturamento
-│   │   ├── fiscal/         # Regras fiscais
-│   │   ├── financeiro/     # Contas a pagar/receber
-│   │   ├── rh/             # Funcionários, folha de pagamento
-│   │   ├── vendas/         # Clientes, pedidos de venda
-│   │   └── wms/            # Lotes, localizações, alocações
-│   ├── application/        # Casos de uso
+│   ├── domain/                    # Entidades, Value Objects, Regras de Negócio
+│   │   ├── value_objects.py       # CNPJ, Money, CPF
+│   │   ├── compras/               # Workflow de compras
+│   │   ├── contabilidade/         # Plano de contas, lançamentos
+│   │   ├── controlling/           # Centros de custo, orçamentos
+│   │   ├── contratos/             # Gestão de contratos
+│   │   ├── erp/                   # Produtos, Fornecedores
+│   │   ├── estoque/               # Controle de estoque, custos
+│   │   ├── faturamento/           # Propostas comerciais, notas fiscais
+│   │   ├── fiscal/                # Regras fiscais, tributos
+│   │   ├── financeiro/            # Contas a pagar/receber
+│   │   ├── rh/                    # Funcionários, cargos
+│   │   ├── vendas/                # Clientes, pedidos de venda
+│   │   └── wms/                    # Lotes, localizações, alocações
+│   ├── application/               # Casos de uso
+│   │   ├── ports/                 # Interfaces de repositório
 │   │   └── use_cases/
-│   │       ├── erp/        # CRUD produtos, fornecedores
-│   │       ├── vendas/      # Processar venda
-│   │       └── wms/         # Receber/alocar mercadorias
-│   ├── infrastructure/     # Implementação técnica
-│   │   ├── database.py     # SQLAlchemy config
-│   │   ├── auth.py         # JWT authentication
-│   │   ├── audit.py        # Audit logging
-│   │   ├── orm_models/     # Modelos ORM (9 arquivos)
-│   │   └── repositories/   # Implementações de repositório
-│   └── presentation/       # API REST
+│   │       ├── erp/               # CRUD produtos, pedidos de compra
+│   │       ├── vendas/            # Processar venda
+│   │       └── wms/                # Receber/alocar mercadorias
+│   ├── infrastructure/            # Implementação técnica
+│   │   ├── database.py            # SQLAlchemy config
+│   │   ├── auth.py                # JWT authentication
+│   │   ├── audit.py               # Audit logging
+│   │   ├── logging_config.py      # Configuração de logs
+│   │   ├── orm_models/            # Modelos ORM (10 arquivos)
+│   │   └── repositories/          # Implementações de repositório
+│   └── presentation/              # API REST
 │       └── api/
-│           ├── middlewares/
-│           └── routers/     # 16 routers FastAPI
+│           ├── middlewares/       # Error handling
+│           └── routers/           # 17 routers FastAPI
 ├── frontend/
 │   └── src/
-│       ├── components/     # 21 componentes React
-│       ├── services/        # api.js (camada de serviço)
+│       ├── components/            # 26 componentes React
+│       │   ├── Dashboard.jsx
+│       │   ├── Login.jsx
+│       │   ├── Produtos.jsx
+│       │   ├── Estoque.jsx
+│       │   ├── ComprasWorkflow.jsx
+│       │   ├── CRM.jsx
+│       │   ├── Vendas.jsx
+│       │   ├── Comissoes.jsx
+│       │   ├── Financeiro.jsx
+│       │   ├── Fiscal.jsx
+│       │   ├── Faturamento.jsx
+│       │   ├── Contratos.jsx
+│       │   ├── Contabilidade.jsx
+│       │   ├── Controlling.jsx
+│       │   ├── RH.jsx
+│       │   ├── Expedicao.jsx
+│       │   ├── Auditoria.jsx
+│       │   ├── Analytics.jsx
+│       │   ├── WMSModal.jsx
+│       │   ├── ComprasModal.jsx
+│       │   ├── Parceiros.jsx
+│       │   └── App.jsx
+│       ├── services/              # api.js (camada de serviço)
 │       └── assets/
-├── tests/                  # Testes pytest
-├── skills/                 # Skills para IA
-├── supabase/              # Configuração Supabase
-├── static/                 # Frontend buildado
+├── tests/                         # Testes pytest
+├── skills/                        # Skills para IA
+├── supabase/                      # Configuração Supabase
+├── static/                        # Frontend buildado
 ├── Dockerfile
 ├── requirements.txt
 └── .env
@@ -74,23 +100,28 @@ SistemaEstoque/
 - Gráficos dinâmicos (vendas vs compras, distribuição financeira)
 - KPIs em tempo real
 - Indicadores de saúde do sistema
+- Analytics com relatórios avançados
 
 ### Módulo ERP
 - Cadastro de produtos (nome, código de barras, status)
 - Gestão de fornecedores (razão social, CNPJ)
+- Gestão de clientes
 - Ordens de compra com workflow completo
 - Parametrização de estoque (mínimos/máximos)
+- Robust routers para operações de alto volume
 
 ### Módulo WMS (Warehouse Management)
 - Gestão de armazéns e posições (corredores/prateleiras)
 - Recebimento de mercadorias com geração de lotes
 - Alocação de produtos em localizações
 - Controle de validade e lotes
+- Modal interativo para operações WMS
 
 ### Módulo de Compras Workflow
 - Solicitação de compra → Cotação → Aprovação → Conferência física → NF entrada
 - Fluxo completo com múltiplas aprovações
 - Conferencia física de mercadorias
+- Modal para registro de compras
 
 ### CRM & Vendas
 - Gestão de clientes
@@ -98,6 +129,7 @@ SistemaEstoque/
 - Funil de vendas
 - Vendedores e comissões
 - Pedidos de venda com workflow
+- Gestão de parceiros comerciais
 
 ### Módulo Financeiro
 - Contas a receber
@@ -143,7 +175,7 @@ SistemaEstoque/
 ## Perfis de Usuário
 
 | Perfil | Permissões |
-|--------|-----------|
+|--------|------------|
 | ADMIN | Acesso total ao sistema |
 | RH_USER | Módulo de Recursos Humanos |
 | FINANCE_USER | Módulo Financeiro |
@@ -195,7 +227,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 ### Backend (Render.com)
 1. Conecte o repositório GitHub
-2. Configure o `Root Directory` como raiz do projeto
+2. Configure o `Root Directory` como `SistemaEstoque`
 3. Apontar para o Dockerfile
 4. Injete a `DATABASE_URL` nas variáveis de ambiente
 
@@ -212,7 +244,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 |--------|-----------|
 | `seed_sellers.py` | Popula tabela de vendedores |
 | `update_db.py` | Atualiza schema do banco |
-| `test_hash.py` | Teste de hashing |
+| `test_hash.py` | Teste de hashing de senhas |
 
 ---
 
@@ -251,6 +283,8 @@ pytest tests/domain/
 | Contratos | `/api/v1/contratos` | Gestão de contratos |
 | Contabilidade | `/api/v1/contabilidade` | Lançamentos contábeis |
 | Logística | `/api/v1/logistica` | Expedição |
+| Estoque | `/api/v1/estoque` | Controle de estoque |
+| Robust | `/api/v1/robust` | Operações de alto volume |
 
 ---
 
@@ -260,31 +294,37 @@ pytest tests/domain/
 ┌─────────────────────────────────────────────────────────────┐
 │                        FRONTEND (React)                      │
 │  Dashboard | ERP | WMS | CRM | Vendas | RH | Analytics...  │
+│  + 26 componentes React com TailwindCSS                     │
 └─────────────────────────┬───────────────────────────────────┘
                           │ HTTP/REST (JSON)
                           ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                    PRESENTATION (FastAPI)                    │
 │   Routers: auth | erp | wms | crm | vendas | rh...         │
-│   Middlewares: error handling, JWT validation                │
+│   Middlewares: error handling, JWT validation, CORS         │
+│   Schemas: Pydantic validation                              │
 └─────────────────────────┬───────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                    APPLICATION (Use Cases)                   │
-│   ReceberMercadoria | AlocarProduto | ProcessarVenda...    │
+│   ReceberMercadoria | AlocarProduto | ProcessarVenda...     │
+│   Ports (Interfaces) para inversão de dependência           │
 └─────────────────────────┬───────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                      DOMAIN (Entities)                       │
 │   Lote | Localizacao | Produto | Fornecedor | Cliente...    │
+│   Value Objects: CNPJ, Money, CPF                           │
+│   Domain Services: Regras de negócio puras                  │
 └─────────────────────────┬───────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                  INFRASTRUCTURE (Impl)                      │
-│   Repositories (SQLAlchemy) | ORM Models | Auth | Audit    │
+│   Repositories (SQLAlchemy) | ORM Models (10 arquivos)     │
+│   Auth (JWT) | Audit Logging | Database Config              │
 └─────────────────────────┬───────────────────────────────────┘
                           │
                           ▼
@@ -292,6 +332,19 @@ pytest tests/domain/
 │                 DATABASE (PostgreSQL/Supabase)               │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Versionamento por Fases
+
+| Fase | Módulo | Descrição |
+|------|--------|-----------|
+| 1-5 | Core | ERP, Logística, CRM, Contratos, Dashboard, Vendas, Financeiro |
+| 6 | ERP Completo | Estoque, Compras, Fiscal, Faturamento, Contabilidade |
+| 7 | Enterprise | RH, Controlling |
+| 8 | Segurança | Auth, JWT, Auditoria |
+| 9 | Analytics & BI | Dashboards avançados, relatórios |
+| 10 | Logística Avançada | Expedição, rastreamento |
 
 ---
 

@@ -3,6 +3,8 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
+import { CardSkeleton, ChartSkeleton } from './Skeleton';
+import { PageHeader } from './Breadcrumb';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://192.168.15.72:8000';
 const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
@@ -48,13 +50,25 @@ const Dashboard = () => {
   const fmt = (v) => `R$ ${Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 
   if (loading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-500"></div>
+    <div className="p-6">
+      <PageHeader title="Dashboard" subtitle="Visão geral do sistema" />
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        {[1,2,3,4].map(i => <CardSkeleton key={i} />)}
+      </div>
+      <ChartSkeleton />
     </div>
   );
 
   return (
     <div className="fade-in space-y-8">
+      <PageHeader 
+        title="Dashboard" 
+        subtitle="Visão geral do sistema"
+        breadcrumbs={[
+          { label: 'Início', href: '#' },
+          { label: 'Dashboard' }
+        ]}
+      />
 
       {/* Cards Row 1 — Financeiro */}
       <div>

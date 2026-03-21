@@ -45,7 +45,7 @@ const Vendas = ({ setToast }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${api.baseURL || 'http://192.168.15.72:8000'}/api/v1/vendas/pedidos//`, {
+      const res = await fetch(`${BASE_URL}/api/v1/vendas/pedidos/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(venda)

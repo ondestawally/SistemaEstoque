@@ -41,6 +41,13 @@ def receber_mercadoria(dto: ReceberMercadoriaDto, use_case: ReceberMercadoriaUse
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@router.get("/armazens/")
+def listar_armazens(db: Session = Depends(get_db)):
+    from infrastructure.orm_models.wms_models import ArmazemORM
+    armazens = db.query(ArmazemORM).all()
+    return [{"id": a.id, "nome": a.nome, "ativo": a.ativo} for a in armazens]
+
+
 @router.post("/alocar/", status_code=200)
 def alocar_produto(dto: AlocarProdutoDto, use_case: AlocarProdutoUseCase = Depends(get_alocar_use_case)):
     """ Move o item disponível em um lote para uma posição física do Armazém """

@@ -4,10 +4,10 @@ from alembic import context
 import sys
 import os
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'src'))
 
-from src.infrastructure.database import Base
-from src.infrastructure.orm_models import (
+from infrastructure.database import Base
+from infrastructure.orm_models import (
     auth_models,
     erp_models,
     wms_models,

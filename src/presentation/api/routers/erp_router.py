@@ -62,7 +62,16 @@ def criar_fornecedor(dto: FornecedorDTO, db: Session = Depends(get_db)):
 @router.get("/fornecedores/", response_model=List[FornecedorDTO])
 def listar_fornecedores(db: Session = Depends(get_db)):
     repo = FornecedorRepositorySQLAlchemy(db)
-    return repo.listar_todos()
+    fornecedores = repo.listar_todos()
+    return [
+        FornecedorDTO(
+            id=f.id,
+            razao_social=f.razao_social,
+            cnpj=str(f.cnpj),
+            ativo=f.ativo
+        )
+        for f in fornecedores
+    ]
 
 @router.post("/pedidos/", status_code=201)
 def criar_pedido_compra(dto: CriarPedidoCompraDto, use_case: CriarPedidoCompraUseCase = Depends(get_criar_pedido_use_case)):
